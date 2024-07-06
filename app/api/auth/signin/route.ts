@@ -1,27 +1,28 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dbConnect from "../../../../lib/mongodb";
 import User from "../../../../models/user";
+import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+export async function POST(req: NextRequest) {
   await dbConnect();
 
   try {
-    const { email, password } = req.body;
+    const body = await req.json();
+    const { email, password } = body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
     }
 
     const token = jwt.sign(
@@ -32,12 +33,13 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     );
 
-    res.status(200).json({ token });
+    return NextResponse.json({ token }, { status: 200 });
   } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
-};
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-  res.status(405).json({ message: "Method not allowed" });
-};
+}
+
+export async function GET(req: NextRequest) {
+  return NextResponse.json({ message: "Method not allowed" }, { status: 405 });
+}

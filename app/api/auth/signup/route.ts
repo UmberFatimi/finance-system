@@ -1,27 +1,30 @@
-// /pages/api/auth/signup.ts
-import type { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "bcryptjs";
-import dbConnect from "../../../../lib/mongodb";
-import User from "../../../../models/user";
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import dbConnect from '../../../../lib/mongodb';
+import User from '../../../../models/user';
 
-// Handler for POST requests
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+export async function POST(req: NextRequest) {
+  const { method } = req;
+
+  if (method !== 'POST') {
+    return NextResponse.json({ message: "Method not allowed" }, { status: 405 });
+  }
+
   await dbConnect();
 
   try {
-    const { name, email, password, role } = req.body;
+    const body = await req.json();
+    const { name, email, password, role } = body;
 
     if (!name || !email || !password || !role) {
-      res.status(400).json({ message: "All fields are required" });
-      return;
+      return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      res.status(400).json({ message: "User already exists" });
       console.log("User already exists");
-      return;
+      return NextResponse.json({ message: "User already exists" }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,19 +38,10 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
-    console.log(User);
-  } catch (error: any) {
+    console.log(newUser);
+    return NextResponse.json({ message: "User registered successfully" }, { status: 201 });
+  } catch (error) {
     console.error("Error registering user:", error);
-    res.status(405).json({ message: 'Method not allowed' });
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-};
-
-// Handler for other HTTP methods
-// export default function handler(req: NextApiRequest, res: NextApiResponse) {
-//   if (req.method === 'POST') {
-//     return POST(req, res);
-//   } else {
-//     res.status(405).json({ message: "Method not allowed" });
-//   }
-// }
+}

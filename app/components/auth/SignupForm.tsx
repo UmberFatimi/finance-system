@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../../../components/ui/form";
 import { useForm } from "react-hook-form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormSchema } from "@/zod/formSchema";
 import { z } from "zod";
@@ -16,8 +16,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
+} from "../../../components/ui/select";
+import { Card, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
 
 export default function RegisterForm() {
@@ -107,7 +107,7 @@ export default function RegisterForm() {
               )}
             />
 
-            <Button type="submit">Register</Button>
+            <Button variant="custom" type="submit">Register</Button>
           </form>
         </Form>
         <CardFooter>

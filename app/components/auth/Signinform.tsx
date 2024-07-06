@@ -1,16 +1,16 @@
 "use client";
 
 import React from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../../../components/ui/form";
 import { useForm } from "react-hook-form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SigninFormSchema } from "@/zod/formSchema";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Card, CardFooter, CardTitle } from "../ui/card";
+import { Card, CardFooter, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
 
 export default function SignInForm() {
@@ -73,7 +73,7 @@ export default function SignInForm() {
             )}
           />
 
-          <Button type="submit">Sign In</Button>
+          <Button variant="custom" type="submit">Sign In</Button>
         </form>
       </Form>
       <CardFooter>
