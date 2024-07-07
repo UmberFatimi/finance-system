@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Card, CardFooter, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignInForm() {
   const form = useForm({
@@ -23,7 +25,6 @@ export default function SignInForm() {
   });
   const router = useRouter();
 
-  //form submission
   const onSubmit = async (values: z.infer<typeof SigninFormSchema>) => {
     try {
       const result = await signIn("credentials", {
@@ -32,56 +33,65 @@ export default function SignInForm() {
         password: values.password,
       });
       if (result?.error) {
-        console.error(result.error);
+        toast.error(result.error);
       } else {
-        // window.location.href = "/dashboard";
         router.push("/dashboard");
       }
     } catch (error) {
       console.error(error);
+      toast.error("An unexpected error occurred.");
     }
   };
+
+  const onError = (errors: any) => {
+    if (errors.email) {
+      toast.error(errors.email.message);
+    }
+    if (errors.password) {
+      toast.error(errors.password.message);
+    }
+  };
+
   return (
-    <div className=" flex justify-center items-center h-full border ">
-
-    <Card className="mx-auto max-w-md p-4">
-      <CardTitle className="text-3xl font-bold">Sign In</CardTitle>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="email" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <Button variant="custom" type="submit">Sign In</Button>
-        </form>
-      </Form>
-      <CardFooter>
-        <Link className="decoration-slate-900" href={"/auth/signup"}>
-          Don&apos;t have an account | Sign Up
-        </Link>
-      </CardFooter>
-    </Card>
+    <div className="flex justify-center items-center h-full border">
+      <Card className="mx-auto max-w-md p-4">
+        <CardTitle className="text-3xl font-bold">Sign In</CardTitle>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit, onError)}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="email" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="password" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button variant="custom" type="submit">Sign In</Button>
+          </form>
+        </Form>
+        <CardFooter>
+          <Link className="decoration-slate-900" href={"/auth/signup"}>
+            Don&apos;t have an account | Sign Up
+          </Link>
+        </CardFooter>
+      </Card>
+      <ToastContainer />
     </div>
   );
 }
