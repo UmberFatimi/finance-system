@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../../../components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "../../../components/ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
@@ -9,11 +15,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SigninFormSchema } from "@/zod/formSchema";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { Card, CardFooter, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { signIn } from "next-auth/react";
 
 export default function SignInForm() {
   const form = useForm({
@@ -25,22 +31,37 @@ export default function SignInForm() {
   });
   const router = useRouter();
 
-  const onSubmit = async (values: z.infer<typeof SigninFormSchema>) => {
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email: values.email,
-        password: values.password,
-      });
-      if (result?.error) {
-        toast.error(result.error);
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("An unexpected error occurred.");
+  const onSubmit = async (data: z.infer<typeof SigninFormSchema>) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (result?.error) {
+      toast.error("incorrect username or password");
     }
+    if (result?.url) {
+      router.replace("/dashboard");
+    }
+
+    console.log(result);
+
+    // try {
+    //   const result = await signIn("credentials", {
+    //     redirect: false,
+    //     email: values.email,
+    //     password: values.password,
+    //   });
+    //   if (result?.error) {
+    //     toast.error(result.error);
+    //   } else {
+    //     router.push("/dashboard");
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   toast.error("An unexpected error occurred.");
+    // }
   };
 
   const onError = (errors: any) => {
@@ -82,8 +103,10 @@ export default function SignInForm() {
                 </FormItem>
               )}
             />
-            <Button variant="custom" type="submit">Sign In</Button>
-          </form>
+            <Button variant="custom" type="submit">
+              Signin
+            </Button>
+          </form>          
         </Form>
         <CardFooter>
           <Link className="decoration-slate-900" href={"/auth/signup"}>
@@ -95,3 +118,17 @@ export default function SignInForm() {
     </div>
   );
 }
+
+// import { signIn } from "next-auth/react"
+
+// export default function SignInForm() {
+//   return (
+//     <form
+//       action={async () => {
+//         await signIn()
+//       }}
+//     >
+//       <button type="submit">Sign in</button>
+//     </form>
+//   )
+// }
