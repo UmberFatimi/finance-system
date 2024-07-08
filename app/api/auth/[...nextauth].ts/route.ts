@@ -1,9 +1,14 @@
-import clientPromise from "@/lib/db";
 import NextAuth from "next-auth";
-import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import clientPromise from "@/lib/db";
 
-
+// Define the user type
+interface User {
+  id: string;
+  email: string;
+  role: string;
+}
 
 export default NextAuth({
   providers: [
@@ -19,17 +24,17 @@ export default NextAuth({
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" },
         });
-        const user = await res.json();
+        const user: User | null = await res.json();
 
         if (res.ok && user) {
-          return user;
+          return Promise.resolve(user); // Ensure it returns a promise
         } else {
-          return null;
+          return Promise.resolve(null); // Ensure it returns a promise
         }
       },
     }),
   ],
-    adapter: MongoDBAdapter(clientPromise),
+  // adapter :  MongoDBAdapter(clientPromise),
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, token }) {
@@ -37,8 +42,8 @@ export default NextAuth({
       if (token) {
         session.user = {
           ...session.user,
-          id: token.userId,
-          role: token.role,
+          id: token.userId as string,
+          role: token.role as string,
         };
       }
       return session;

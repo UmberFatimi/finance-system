@@ -19,6 +19,8 @@ import {
 } from "../../../components/ui/select";
 import { Card, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function RegisterForm() {
   const form = useForm({
@@ -36,15 +38,18 @@ export default function RegisterForm() {
   const onSubmit = async (values: z.infer<typeof SignupFormSchema>) => {
     try {
       await axios.post("/api/auth/signup", values);
+      toast.success("Registration successful!");
       router.push("/auth/signin");
     } catch (error: any) {
+      toast.error("Registration failed. Please try again.");
       console.error(error.response?.data);
     }
   };
+
   return (
-    <div className=" flex justify-center items-center h-full border">
+    <div className="flex justify-center items-center h-full border">
       <Card className="mx-auto max-w-md p-4">
-      <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
+        <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -106,7 +111,6 @@ export default function RegisterForm() {
                 </FormItem>
               )}
             />
-
             <Button variant="custom" type="submit">Register</Button>
           </form>
         </Form>
@@ -116,6 +120,7 @@ export default function RegisterForm() {
           </Link>
         </CardFooter>
       </Card>
+      <ToastContainer />
     </div>
   );
 }

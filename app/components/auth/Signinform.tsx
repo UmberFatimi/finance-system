@@ -9,11 +9,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SigninFormSchema } from "@/zod/formSchema";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { Card, CardFooter, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { signIn } from "next-auth/react"; 
 
 export default function SignInForm() {
   const form = useForm({
@@ -33,12 +33,14 @@ export default function SignInForm() {
         password: values.password,
       });
       if (result?.error) {
+        console.error("Error during sign-in:", result.error);
         toast.error(result.error);
       } else {
+        toast.success("Signed in successfully!");
         router.push("/dashboard");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Unexpected error during sign-in:", error);
       toast.error("An unexpected error occurred.");
     }
   };

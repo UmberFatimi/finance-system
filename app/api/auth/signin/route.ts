@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    return NextResponse.json({ token }, { status: 200 });
+    const { _id, name, role } = user;
+
+    return NextResponse.json({ token, user: { _id, email, name, role } }, { status: 200 });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
