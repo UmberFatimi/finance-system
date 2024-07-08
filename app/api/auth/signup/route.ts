@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, email, password, role } = body;
+    const { username, email, password, role } = body;
 
-    if (!name || !email || !password || !role) {
+    if (!username || !email || !password || !role) {
       return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }
 
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      name,
+      username,
       email,
       password: hashedPassword,
       role,

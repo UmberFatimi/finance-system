@@ -26,7 +26,7 @@ export default function RegisterForm() {
   const form = useForm({
     resolver: zodResolver(SignupFormSchema),
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
       role: "buyer",
@@ -38,7 +38,6 @@ export default function RegisterForm() {
   const onSubmit = async (values: z.infer<typeof SignupFormSchema>) => {
     try {
       await axios.post("/api/auth/signup", values);
-      toast.success("Registration successful!");
       router.push("/auth/signin");
     } catch (error: any) {
       toast.error("Registration failed. Please try again.");
@@ -54,7 +53,7 @@ export default function RegisterForm() {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
