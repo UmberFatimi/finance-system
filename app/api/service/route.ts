@@ -37,3 +37,28 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+
+
+export async function GET(req: NextRequest) {
+  await dbConnect();
+
+  try {
+    const services = await ServiceModel.find({});
+
+    if (services.length === 0) {
+      return NextResponse.json(
+        { message: "No services found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(services, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

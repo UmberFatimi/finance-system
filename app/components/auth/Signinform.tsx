@@ -19,6 +19,7 @@ import { Card, CardFooter, CardTitle } from "../../../components/ui/card";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { signIn } from "next-auth/react";
 
 export default function SignInForm() {
   const form = useForm({
