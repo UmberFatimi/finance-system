@@ -1,20 +1,26 @@
-// import {NextAuthOptions} from "next-auth";
 import User from "../../../../models/user";
 import dbConnect from "@/lib/mongodb";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { Session } from "next-auth";
+import { AuthOptions, SessionOptions } from "next-auth";
 
-export const authOptions = {
+const session: SessionOptions = {
+  strategy: "jwt",
+  maxAge: 30 , 
+  updateAge: 24,
+};
+
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       id: "credentials",
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        identifier: { label: "Email or Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async  authorize(credentials: any): Promise<any> {
+      async authorize(credentials: any): Promise<any> {
         await dbConnect();
         try {
           const user = await User.findOne({
@@ -24,7 +30,7 @@ export const authOptions = {
             ],
           });
           if (!user) {
-            throw new Error("No usr found with this email");
+            throw new Error("No user found with this email or username");
           }
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
@@ -36,35 +42,31 @@ export const authOptions = {
             throw new Error("Incorrect Password");
           }
         } catch (error: any) {
-        //   throw new Error(error);
-          throw new Error(`Database error: ${error.message}`);
+          console.error("Database error:", error.message);
+          throw new Error("Authentication failed" + error.message);
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }:{token:any;user:any}): Promise<any> {
+    async jwt({ token, user }: { token: any; user: any }): Promise<any> {
       if (user) {
         token._id = user._id?.toString();
-        token.username = user.username;
-
-        return token;
+        // token.username = user.username;
       }
+      return token;
     },
-    async session({ session, token }:{session: Session;token:any}): Promise<Session> {
+    async session({ session, token }: { session: Session; token: any }): Promise<Session> {
       if (token) {
-        session.user._id = token._id;
-        sessionStorage.user.username = token.username;
+        session.user.email = token.email;
+        // session.user.username = token.username;
       }
       return session;
     },
   },
   pages: {
-    signIn: "/signin",
-    
+    signIn: "api/auth/signin",
   },
-  session: {
-    strategy: "jwt",
-  },
-  secret: process.env.AUTH_SECRET,
+  session: session,
+  secret: process.env.NEXTAUTH_SECRET,
 };

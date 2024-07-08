@@ -34,7 +34,7 @@ export default NextAuth({
       },
     }),
   ],
-  // adapter :  MongoDBAdapter(clientPromise),
+   adapter : MongoDBAdapter(clientPromise),
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, token }) {
@@ -58,7 +58,7 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "api/auth/signin",
     signOut: "/auth/signout",
     error: "/auth/error",
     verifyRequest: "/auth/verify-request",
