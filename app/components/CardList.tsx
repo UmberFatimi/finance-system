@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import useSWR from "swr";
-import Card from './Card';
+import ServicesCard from './Card';
 import { Loader } from 'lucide-react';
 
 const fetcher = (url: any) => fetch(url).then((res) => res.json());
@@ -18,14 +18,14 @@ function CardList() {
   if (error) return <div>Failed to load</div>;
   if (!data) return (
     <div className="flex justify-center items-center h-full">
-      <Loader className="animate-spin" size={48} />
+      <Loader className="animate-spin text-violet-700" size={48} />
     </div>
   );
 
   return (
     <div className="flex flex-wrap justify-center">
       {data.map((card, index) => (
-        <Card 
+        <ServicesCard 
           key={index} 
           title={card.title} 
           description={card.description} 

@@ -21,7 +21,14 @@ import { Card, CardFooter, CardHeader, CardTitle } from "../../../components/ui/
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Logo } from "@/components/Logo";
+import { cn } from "@/lib/utils";
+import { Montserrat } from "next/font/google";
+const font=Montserrat({
+  weight:"700",
+  subsets:["latin"]
 
+})
 export default function RegisterForm() {
   const form = useForm({
     resolver: zodResolver(SignupFormSchema),
@@ -46,19 +53,23 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="flex justify-center items-center h-full border">
-      <Card className="mx-auto max-w-md p-4">
-        <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
+    <div className="flex justify-center items-center h-full border text-center">
+      <Card className=" mx-auto max-w-md p-4 shadow-md">
+      <div className="text-center items-center my-5">
+
+        <Logo/>
+        <CardTitle className={cn("text-3xl font-bold text-center mt-3 mb-6",font.className)}>Sign Up</CardTitle>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
+            
             <FormField
+            
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="name" {...field} />
+                    <Input placeholder="name" className="my-3 hover:shadow-md" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -68,9 +79,9 @@ export default function RegisterForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="email" {...field} />
+                    <Input placeholder="email" {...field}
+                    className="my-3 hover:shadow-md" />
                   </FormControl>
                 </FormItem>
               )}
@@ -80,19 +91,19 @@ export default function RegisterForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="password" {...field} />
+                    <Input placeholder="password" 
+                   className="my-3 hover:shadow-md" {...field} />
                   </FormControl>
                 </FormItem>
               )}
             />
             <FormField
+            
               control={form.control}
               name="role"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
+                <FormItem className="hover:shadow-md rounded-md" >
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
@@ -101,7 +112,8 @@ export default function RegisterForm() {
                       <SelectTrigger>
                         <SelectValue placeholder="" />
                       </SelectTrigger>
-                      <SelectContent>
+                    
+                    <SelectContent >
                         <SelectItem value="buyer">Buyer</SelectItem>
                         <SelectItem value="seller">Seller</SelectItem>
                       </SelectContent>
@@ -110,12 +122,13 @@ export default function RegisterForm() {
                 </FormItem>
               )}
             />
-            <Button variant="custom" type="submit">Register</Button>
+            <Button type="submit" className="w-full mt-7">Register</Button>
           </form>
         </Form>
+        </div>
         <CardFooter>
-          <Link className="decoration-slate-900" href={"/auth/signin"}>
-            Already have an account | Sign In
+          <Link className="" href={"/auth/signin"}>
+            Already have an account | <span className="text-violet-700">Sign In</span>
           </Link>
         </CardFooter>
       </Card>

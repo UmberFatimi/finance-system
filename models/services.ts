@@ -1,7 +1,8 @@
 import mongoose, { Schema, Document, model, models } from "mongoose";
 
 // Interface for Service
-interface IService extends Document {
+export interface IService extends Document {
+  _id:string;
   title: string;
   description: string;
   price: string;

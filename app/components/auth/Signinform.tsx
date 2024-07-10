@@ -20,7 +20,14 @@ import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signIn } from "next-auth/react";
+import { Montserrat } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/Logo";
 
+const font = Montserrat({
+  weight: "700",
+  subsets: ["latin"],
+});
 export default function SignInForm() {
   const form = useForm({
     resolver: zodResolver(SigninFormSchema),
@@ -59,43 +66,63 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex justify-center items-center h-full border">
-      <Card className="mx-auto max-w-md p-4">
-        <CardTitle className="text-3xl font-bold">Sign In</CardTitle>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit, onError)}>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="email" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="password" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button variant="custom" type="submit">
-              Signin
-            </Button>
-          </form>          
-        </Form>
+    <div className="flex justify-center items-center h-full  ">
+      <Card className="mx-auto max-w-md p-4 shadow-md my-5 text-center items-center">
+        <div className="text-center items-center my-5">
+          <Logo />
+
+          <CardTitle
+            className={cn(
+              "text-3xl font-bold text-center mt-3 mb-6",
+              font.className
+            )}
+          >
+            Sign In
+          </CardTitle>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit, onError)}>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="email"
+                        {...field}
+                        className="my-3 hover:shadow-md"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="password"
+                        className="hover:shadow-md"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full mt-7 hover:shadow-md">
+                Signin
+              </Button>
+            </form>
+          </Form>
+        </div>
         <CardFooter>
-          <Link className="decoration-slate-900" href={"/auth/signup"}>
-            Don&apos;t have an account | Sign Up
+          <Link className="" href={"/auth/signup"}>
+            Don&apos;t have an account |
+            <span className="text-violet-700">Sign Up</span>
           </Link>
         </CardFooter>
       </Card>
